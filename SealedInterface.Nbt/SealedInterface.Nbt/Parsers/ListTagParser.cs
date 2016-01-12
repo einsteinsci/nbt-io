@@ -24,7 +24,7 @@ namespace SealedInterface.Nbt.Parsers
 
 			byte[] count_b = new byte[4];
 			stream.Read(count_b, 0, 4);
-			count_b.ReverseIfLittleEndian();
+			count_b = count_b.ReverseIfLittleEndian();
 			int count = BitConverter.ToInt32(count_b, 0);
 
 			TagParserBase parser = Parsers[generic];
@@ -46,7 +46,7 @@ namespace SealedInterface.Nbt.Parsers
 			stream.WriteByte(generic);
 
 			byte[] data = BitConverter.GetBytes(list.Count);
-			//data = data.ReverseIfLittleEndian(); // already big-endian?
+			data = data.ReverseIfLittleEndian();
 			stream.Write(data, 0, 4);
 
 			foreach (INamedBinaryTag tag in list)

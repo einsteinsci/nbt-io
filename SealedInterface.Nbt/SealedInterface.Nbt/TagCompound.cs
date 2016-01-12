@@ -84,6 +84,11 @@ namespace SealedInterface.Nbt
 		{
 			Set(tag.Name, tag);
 		}
+
+		public void SetString(string name, string text)
+		{
+			Set(name, new TagString(name, text));
+		}
 		
 		#endregion set shortcuts
 

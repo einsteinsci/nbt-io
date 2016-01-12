@@ -10,38 +10,29 @@ namespace SealedInterface.Nbt.Parsers
 	// singleton
 	public abstract class TagParserBase
 	{
-		public static readonly Dictionary<ETagType, TagParserBase> Parsers = new Dictionary<ETagType, TagParserBase>();
-
-		public static void Register()
+		public static readonly Dictionary<ETagType, TagParserBase> Parsers = new Dictionary<ETagType, TagParserBase>()
 		{
-			Parsers.Add(ETagType.End, new EndTagParser());
-			Parsers.Add(ETagType.Byte, new ByteTagParser());
-			Parsers.Add(ETagType.Short, new ShortTagParser());
-			Parsers.Add(ETagType.Int, new IntTagParser());
-			Parsers.Add(ETagType.Long, new LongTagParser());
-			Parsers.Add(ETagType.Float, new FloatTagParser());
-			Parsers.Add(ETagType.Double, new DoubleTagParser());
-			Parsers.Add(ETagType.Compound, new CompoundTagParser());
-			Parsers.Add(ETagType.List, new ListTagParser());
-		}
+			{ ETagType.End, new EndTagParser() },
+			{ ETagType.Byte, new ByteTagParser() },
+			{ ETagType.Short, new ShortTagParser() },
+			{ ETagType.Int, new IntTagParser() },
+			{ ETagType.Long, new LongTagParser() },
+			{ ETagType.Float, new FloatTagParser() },
+			{ ETagType.Double, new DoubleTagParser() },
+			{ ETagType.Byte_Array, new ByteArrayTagParser() },
+			{ ETagType.String, new StringTagParser() },
+			{ ETagType.List, new ListTagParser() },
+			{ ETagType.Compound, new CompoundTagParser() },
+			{ ETagType.Int_Array, new IntArrayTagParser() }
+		};
 
 		public static void WriteTag(Stream stream, INamedBinaryTag tag)
 		{
-			if (Parsers.Count == 0)
-			{
-				Register();
-			}
-
 			Parsers[tag.TagType].WriteFullTag(stream, tag);
 		}
 
 		public static TagCompound ParseCompound(Stream stream)
 		{
-			if (Parsers.Count == 0)
-			{
-				Register();
-			}
-
 			return Parsers[ETagType.Compound].Parse(stream) as TagCompound;
 		}
 

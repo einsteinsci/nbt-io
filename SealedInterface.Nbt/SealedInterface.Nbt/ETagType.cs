@@ -81,17 +81,17 @@ namespace SealedInterface.Nbt
 			case ETagType.Double:
 				return new TagDouble(name);
 			case ETagType.Byte_Array:
-				return null;
+				return new TagByteArray(name);
 			case ETagType.String:
-				return null;
+				return new TagString(name);
 			case ETagType.List:
 				return new TagList(name);
 			case ETagType.Compound:
 				return new TagCompound(name);
 			case ETagType.Int_Array:
-				return null;
+				return new TagIntArray(name);
 			default:
-				return null;
+				throw new ArgumentOutOfRangeException(nameof(type));
 			}
 		}
 	}
