@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public long Value
 		{ get; set; }
 
+		public object UnderlyingValue => Value;
+
 		public ETagType TagType => ETagType.Long;
 
 		public TagLong(string name, long val = 0)

@@ -13,6 +13,8 @@ namespace SealedInterface.Nbt
 
 		public ETagType TagType => ETagType.End;
 
+		public object UnderlyingValue => null;
+
 		public string ToTreeString(int depth = 0)
 		{
 			return "{END}";

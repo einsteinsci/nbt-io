@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public float Value
 		{ get; set; }
 
+		public object UnderlyingValue => Value;
+
 		public ETagType TagType => ETagType.Float;
 
 		public TagFloat(string name, float val = 0)

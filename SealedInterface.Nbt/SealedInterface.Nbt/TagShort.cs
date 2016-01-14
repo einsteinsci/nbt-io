@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public short Value
 		{ get; set; }
 
+		public object UnderlyingValue => Value;
+
 		public ETagType TagType => ETagType.Short;
 
 		public TagShort(string name, short val = 0)

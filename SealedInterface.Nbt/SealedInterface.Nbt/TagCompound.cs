@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace SealedInterface.Nbt
 {
-	public sealed class TagCompound : INamedBinaryTag
+	public sealed class TagCompound : DynamicObject, INamedBinaryTag
 	{
 		public string Name
 		{ get; private set; }
+
+		public object UnderlyingValue => this;
 
 		public readonly Dictionary<string, INamedBinaryTag> Values = new Dictionary<string, INamedBinaryTag>();
 
@@ -38,6 +40,84 @@ namespace SealedInterface.Nbt
 		public void Set(INamedBinaryTag tag)
 		{
 			Set(tag.Name, tag);
+		}
+
+		public void SetFromUnderlyingValue(string name, object obj)
+		{
+			if (obj == null)
+			{
+				return;
+			}
+
+			if (obj is INamedBinaryTag)
+			{
+				Set(name, obj as INamedBinaryTag);
+			}
+			else if (obj is byte)
+			{
+				SetByte(name, (byte)obj);
+			}
+			else if (obj is sbyte)
+			{
+				SetByte(name, (sbyte)obj);
+			}
+			else if (obj is short)
+			{
+				SetShort(name, (short)obj);
+			}
+			else if (obj is int)
+			{
+				SetInt(name, (int)obj);
+			}
+			else if (obj is long)
+			{
+				SetLong(name, (long)obj);
+			}
+			else if (obj is float)
+			{
+				SetFloat(name, (float)obj);
+			}
+			else if (obj is double)
+			{
+				SetDouble(name, (double)obj);
+			}
+			else if (obj is string)
+			{
+				SetString(name, obj as string);
+			}
+			else if (obj is IEnumerable<byte>)
+			{
+				AddByteArray(name).AddRange(obj as IEnumerable<byte>);
+			}
+			else if (obj is IEnumerable<sbyte>)
+			{
+				AddByteArray(name).AddRange(obj as IEnumerable<sbyte>);
+			}
+			else if (obj is IEnumerable<int>)
+			{
+				AddIntArray(name).AddRange(obj as IEnumerable<int>);
+			}
+			else if (obj is IEnumerable<INamedBinaryTag>)
+			{
+				IEnumerable<INamedBinaryTag> coll = obj as IEnumerable<INamedBinaryTag>;
+				TagList list = new TagList(name);
+				if (coll.Count() > 0)
+				{
+					list.GenericType = coll.First().TagType;
+				}
+				else if (Values.ContainsKey(name) && Values[name] is TagList)
+				{
+					list.GenericType = (Values[name] as TagList).GenericType;
+				}
+
+				list.AddRange(coll);
+
+				Set(list);
+			}
+			else
+			{
+				throw new ArgumentException("Invalid NBT type: " + obj.GetType().FullName);
+			}
 		}
 
 		#region set shortcuts
@@ -80,21 +160,121 @@ namespace SealedInterface.Nbt
 			Set(name, new TagDouble(name, val));
 		}
 
-		public void SetCompound(TagCompound tag)
-		{
-			Set(tag.Name, tag);
-		}
-
 		public void SetString(string name, string text)
 		{
 			Set(name, new TagString(name, text));
 		}
-		
+
 		#endregion set shortcuts
+
+		#region get shortcuts
+
+		public sbyte GetByte(string name)
+		{
+			TagByte b = Get<TagByte>(name);
+			return b?.Value ?? 0;
+		}
+		public byte GetUByte(string name)
+		{
+			sbyte sb = GetByte(name);
+			return unchecked((byte)sb);
+		}
+
+		public short GetShort(string name)
+		{
+			TagShort s = Get<TagShort>(name);
+			return s?.Value ?? 0;
+		}
+		public int GetInt(string name)
+		{
+			TagInt n = Get<TagInt>(name);
+			return n?.Value ?? 0;
+		}
+		public long GetLong(string name)
+		{
+			TagLong l = Get<TagLong>(name);
+			return l?.Value ?? 0;
+		}
+
+		public float GetFloat(string name)
+		{
+			TagFloat f = Get<TagFloat>(name);
+			return f?.Value ?? 0;
+		}
+		public double GetDouble(string name)
+		{
+			TagDouble d = Get<TagDouble>(name);
+			return d?.Value ?? 0;
+		}
+
+		public string GetString(string name)
+		{
+			TagString s = Get<TagString>(name);
+			return s?.Text;
+		}
+
+		public TagCompound GetCompound(string name)
+		{
+			TagCompound tag = Get<TagCompound>(name);
+			return tag;
+		}
+
+		public TagList GetList(string name)
+		{
+			TagList list = Get<TagList>(name);
+			return list;
+		}
+
+		public TagByteArray GetByteArray(string name)
+		{
+			TagByteArray ba = Get<TagByteArray>(name);
+			return ba;
+		}
+
+		public TagIntArray GetIntArray(string name)
+		{
+			TagIntArray ia = Get<TagIntArray>(name);
+			return ia;
+		}
+
+		#endregion get shortcuts
+
+		public TagCompound AddCompound(string name)
+		{
+			TagCompound res = new TagCompound(name);
+			Set(name, res);
+			return res;
+		}
+
+		public TagList AddList(string name, ETagType type)
+		{
+			TagList res = new TagList(name, type);
+			Set(name, res);
+			return res;
+		}
+
+		public TagByteArray AddByteArray(string name)
+		{
+			TagByteArray ba = new TagByteArray(name);
+			Set(name, ba);
+			return ba;
+		}
+
+		public TagIntArray AddIntArray(string name)
+		{
+			TagIntArray ia = new TagIntArray(name);
+			Set(name, ia);
+			return ia;
+		}
 
 		public void Rename(string oldName, string newName)
 		{
 			INamedBinaryTag val = Get(oldName);
+			if (val == null)
+			{
+				return;
+			}
+
 			Values.Remove(oldName);
 			val = val.TagType.MakeTag(newName);
 			Values.Add(newName, val);
@@ -108,6 +288,24 @@ namespace SealedInterface.Nbt
 			}
 
 			return null;
+		}
+
+		public T Get<T>(string name)
+			where T : class, INamedBinaryTag
+		{
+			return Get(name) as T;
+		}
+
+		public override string ToString()
+		{
+			string res = "{" + TagType.GetNotchName() + "} ";
+			if (Name != null)
+			{
+				res += Name + ": ";
+			}
+			res += Values.Count.ToString() + " Members";
+
+			return res;
 		}
 
 		// INameBasedTag
@@ -134,16 +332,23 @@ namespace SealedInterface.Nbt
 			return res.TrimEnd('\n');
 		}
 
-		public override string ToString()
+		#region DynamicObject
+		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
-			string res = "{" + TagType.GetNotchName() + "} ";
-			if (Name != null)
+			if (Values.ContainsKey(binder.Name))
 			{
-				res += Name + ": ";
+				result = Get(binder.Name).UnderlyingValue;
+				return true;
 			}
-			res += Values.Count.ToString() + " Members";
 
-			return res;
+			return base.TryGetMember(binder, out result);
 		}
+
+		public override bool TrySetMember(SetMemberBinder binder, object value)
+		{
+			SetFromUnderlyingValue(binder.Name, value);
+			return true;
+		}
+		#endregion
 	}
 }

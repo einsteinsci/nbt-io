@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public string Name
 		{ get; private set; }
 
+		public object UnderlyingValue => Value;
+
 		public ETagType TagType => ETagType.Double;
 
 		public TagDouble(string name, double val = 0)

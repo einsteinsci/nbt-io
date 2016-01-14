@@ -14,6 +14,8 @@ namespace SealedInterface.Nbt
 		public string Text
 		{ get; set; }
 
+		public object UnderlyingValue => Text;
+
 		public ETagType TagType => ETagType.String;
 
 		public TagString(string name, string text = "")

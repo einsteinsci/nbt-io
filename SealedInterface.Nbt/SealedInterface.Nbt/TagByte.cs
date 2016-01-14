@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public sbyte Value
 		{ get; set; }
 
+		public object UnderlyingValue => Value;
+
 		public bool Boolean
 		{
 			get
@@ -59,7 +61,7 @@ namespace SealedInterface.Nbt
 				res += " " + Name + ": ";
 			}
 
-			res += Value.ToString();
+			res += "0x" + Value.ToString("X2") + " (" + Value.ToString() + ")";
 
 			return res;
 		}
@@ -71,7 +73,7 @@ namespace SealedInterface.Nbt
 			{
 				res += Name + ": ";
 			}
-			res += Value.ToString();
+			res += "0x" + Value.ToString("X2") + " (" + Value.ToString() + ")";
 
 			return res;
 		}

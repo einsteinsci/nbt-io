@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public int Value
 		{ get; set; }
 
+		public object UnderlyingValue => Value;
+
 		public ETagType TagType => ETagType.Int;
 
 		public TagInt(string name, int val = 0)

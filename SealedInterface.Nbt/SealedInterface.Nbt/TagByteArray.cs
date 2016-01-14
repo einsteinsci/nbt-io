@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 		public string Name
 		{ get; private set; }
 
+		public object UnderlyingValue => this;
+
 		public ETagType TagType => ETagType.Byte_Array;
 
 		public int Count => Values.Count;

@@ -24,16 +24,9 @@ namespace SealedInterface.Nbt.test
 			list.Add(tag);
 			list.Add(tag2);
 
-			TagByteArray ba = new TagByteArray("QQQ");
-			ba.AddRange(0xAA, 0xAA, 0xAA, 0xDD);
-
-			TagIntArray ia = new TagIntArray("A1A1A");
-			ia.AddRange(1, 2, 3, 4, 5);
-
-			TagCompound root = new TagCompound("_");
-			root.Set(ba);
+			dynamic root = new TagCompound("_");
+			root.DYN = new int[] { 5, -6 };
 			root.Set(list);
-			root.Set(ia);
 
 			TagParserBase.WriteTag(stream, root);
 			byte[] data = stream.ToArray();

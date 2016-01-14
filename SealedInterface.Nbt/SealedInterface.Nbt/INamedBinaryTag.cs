@@ -15,6 +15,9 @@ namespace SealedInterface.Nbt
 		string Name
 		{ get; }
 
+		object UnderlyingValue
+		{ get; }
+
 		string ToTreeString(int depth = 0);
 	}
 }
