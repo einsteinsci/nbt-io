@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NbtIO.cs" />
     <Compile Include="Parsers\ByteArrayTagParser.cs" />
     <Compile Include="Parsers\ByteTagParser.cs" />
     <Compile Include="Parsers\CompoundTagParser.cs" />

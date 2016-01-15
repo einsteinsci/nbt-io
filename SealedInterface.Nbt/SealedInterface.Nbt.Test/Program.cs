@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,24 +13,53 @@ namespace SealedInterface.Nbt.test
 	{
 		public static void Main(string[] args)
 		{
-			MemoryStream stream = new MemoryStream();
+			ReadRealFile();
 
-			TagCompound tag = new TagCompound("ABCD");
-			tag.SetShort("EF", 4095);
-			TagCompound tag2 = new TagCompound("GHI");
-			tag2.SetFloat("JK", 0.5f);
-			tag2.SetString("TXT", "Hello World!");
+			Console.ReadKey();
+		}
 
-			TagList list = new TagList("ZZZZ", ETagType.Compound);
-			list.Add(tag);
-			list.Add(tag2);
+		public static void ReadRealFile()
+		{
+			const string LEVEL_DAT_PATH = @"D:\Minecraft\saves\§9Creative Test\playerdata\b9d55d02-b553-4d8d-ac4e-4cc1b151ade9.dat";
+			using (GZipStream stream = new GZipStream(new FileStream(LEVEL_DAT_PATH, FileMode.Open), CompressionMode.Decompress))
+			{
+				TagCompound parsed = NbtIO.Parse(stream);
 
-			dynamic root = new TagCompound("_");
-			root.DYN = new int[] { 5, -6 };
-			root.Set(list);
+				Console.WriteLine("NBT Data from '{0}':", LEVEL_DAT_PATH.ToUpper());
+				Console.WriteLine();
+				Console.WriteLine(parsed.ToTreeString());
+			}
+		}
 
-			TagParserBase.WriteTag(stream, root);
-			byte[] data = stream.ToArray();
+		public static void TestFileStream()
+		{
+			using (FileStream stream = new FileStream("D:\\Test\\level.dat", FileMode.Create))
+			{
+				TagCompound root = MakeRootTag();
+
+				NbtIO.WriteToStream(stream, root);
+
+				Console.WriteLine("Input NBT:");
+				Console.WriteLine(root.ToTreeString());
+
+				Console.WriteLine("\nSaved {0} bytes.", stream.Length);
+				Console.WriteLine();
+			}
+
+			using (FileStream stream = new FileStream("D:\\Test\\level.dat", FileMode.Open))
+			{
+				TagCompound parsed = NbtIO.Parse(stream);
+
+				Console.WriteLine("Read NBT:");
+				Console.WriteLine(parsed.ToTreeString());
+			}
+		}
+
+		public static void TestMemoryStream()
+		{
+			TagCompound root = MakeRootTag();
+			
+			byte[] data = NbtIO.WriteToBytes(root);
 
 			Console.WriteLine(root.ToTreeString());
 
@@ -37,11 +67,28 @@ namespace SealedInterface.Nbt.test
 			Console.WriteLine(ToHex(data));
 			Console.WriteLine();
 
-			stream.Position = 0;
-			TagCompound parsed = TagParserBase.ParseCompound(stream);
-			Console.WriteLine(parsed.ToTreeString());
+			TagCompound parsed = NbtIO.ParseBytes(data);
 
-			Console.ReadKey();
+			Console.WriteLine(parsed.ToTreeString());
+		}
+
+		private static TagCompound MakeRootTag()
+		{
+			TagList list = new TagList("ZZZZ", ETagType.Compound);
+			TagCompound tag = list.AddCompound();
+			tag.SetShort("EF", 4095);
+			TagCompound tag2 = list.AddCompound();
+			tag2.SetFloat("JK", 0.5f);
+			tag2.SetString("TXT", "Hello World!");
+
+			list.Add(tag);
+			list.Add(tag2);
+
+			dynamic root = new TagCompound("ROOT");
+			root.Set(list);
+			root.DYN = new int[] { 5, -6 };
+			root.ZZZZ[1].TEST = 0.1;
+			return root;
 		}
 
 		public static string ToHex(byte[] bytes)

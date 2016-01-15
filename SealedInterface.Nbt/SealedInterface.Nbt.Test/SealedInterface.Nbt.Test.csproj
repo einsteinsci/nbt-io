@@ -7,8 +7,8 @@
     <ProjectGuid>{BEDC8221-57B9-4E85-BC9F-1BD4CF910181}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>sealedinterface.nbt.test</RootNamespace>
-    <AssemblyName>sealedinterface.nbt.test</AssemblyName>
+    <RootNamespace>SealedInterface.Nbt.Test</RootNamespace>
+    <AssemblyName>SealedInterface.Nbt.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

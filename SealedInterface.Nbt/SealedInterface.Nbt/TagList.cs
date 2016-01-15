@@ -84,6 +84,112 @@ namespace SealedInterface.Nbt
 			return res;
 		}
 
+		#region Adders
+
+		public TagCompound AddCompound()
+		{
+			TagCompound t = new TagCompound(null);
+			Add(t);
+			return t;
+		}
+		public TagList AddList(ETagType genericType)
+		{
+			TagList l = new TagList(null, genericType);
+			Add(l);
+			return l;
+		}
+		public TagIntArray AddIntArray(IEnumerable<int> filler)
+		{
+			TagIntArray ia = new TagIntArray(null);
+			ia.AddRange(filler);
+			Add(ia);
+			return ia;
+		}
+		public TagIntArray AddIntArray(params int[] filler)
+		{
+			return AddIntArray((IEnumerable<int>)filler);
+		}
+		public TagByteArray AddByteArray(IEnumerable<byte> filler)
+		{
+			TagByteArray ba = new TagByteArray(null);
+			ba.AddRange(filler);
+			Add(ba);
+			return ba;
+		}
+		public TagByteArray AddByteArray(params byte[] filler)
+		{
+			return AddByteArray((IEnumerable<byte>)filler);
+		}
+		public TagByteArray AddByteArray(IEnumerable<sbyte> filler)
+		{
+			TagByteArray ba = new TagByteArray(null);
+			ba.AddRange(filler);
+			Add(ba);
+			return ba;
+		}
+		public TagByteArray AddByteArray(params sbyte[] filler)
+		{
+			return AddByteArray((IEnumerable<sbyte>)filler);
+		}
+
+		public TagByte AddByte(byte val)
+		{
+			TagByte b = new TagByte(null, val);
+			Add(b);
+			return b;
+		}
+		public TagByte AddByte(sbyte val)
+		{
+			TagByte b = new TagByte(null, val);
+			Add(b);
+			return b;
+		}
+		public TagByte AddByte(bool val)
+		{
+			TagByte b = new TagByte(null, val);
+			Add(b);
+			return b;
+		}
+
+		public TagShort AddShort(short val)
+		{
+			TagShort s = new TagShort(null, val);
+			Add(s);
+			return s;
+		}
+		public TagInt AddInt(int val)
+		{
+			TagInt n = new TagInt(null, val);
+			Add(n);
+			return n;
+		}
+		public TagLong AddLong(long val)
+		{
+			TagLong l = new TagLong(null, val);
+			Add(l);
+			return l;
+		}
+		public TagFloat AddFloat(float val)
+		{
+			TagFloat f = new TagFloat(null, val);
+			Add(f);
+			return f;
+		}
+		public TagDouble AddDouble(double val)
+		{
+			TagDouble d = new TagDouble(null, val);
+			Add(d);
+			return d;
+		}
+		public TagString AddString(string val)
+		{
+			TagString s = new TagString(null, val);
+			Add(s);
+			return s;
+		}
+
+		#endregion Adders
+
 		#region IList
 		public int IndexOf(INamedBinaryTag item)
 		{

@@ -18,9 +18,9 @@ namespace SealedInterface.Nbt.Parsers
 			}
 
 			data = data.ReverseIfLittleEndian();
-			short val = BitConverter.ToInt16(data, 0);
+			double val = BitConverter.ToDouble(data, 0);
 
-			TagShort tag = tagBase as TagShort;
+			TagDouble tag = tagBase as TagDouble;
 			if (tag == null)
 			{
 				throw new InvalidCastException("Wrong NBT type! Expected TagDouble, found " + tagBase.GetType().Name);

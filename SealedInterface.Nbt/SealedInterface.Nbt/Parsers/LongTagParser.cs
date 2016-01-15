@@ -18,9 +18,9 @@ namespace SealedInterface.Nbt.Parsers
 			}
 
 			data = data.ReverseIfLittleEndian();
-			short val = BitConverter.ToInt16(data, 0);
+			long val = BitConverter.ToInt64(data, 0);
 
-			TagShort tag = tagBase as TagShort;
+			TagLong tag = tagBase as TagLong;
 			if (tag == null)
 			{
 				throw new InvalidCastException("Wrong NBT type! Expected TagLong, found " + tagBase.GetType().Name);

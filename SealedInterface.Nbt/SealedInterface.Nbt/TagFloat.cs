@@ -32,11 +32,11 @@ namespace SealedInterface.Nbt
 			{
 				res += "  ";
 			}
-			res += "{" + TagType.GetNotchName() + "}";
+			res += "{" + TagType.GetNotchName() + "} ";
 
 			if (Name != null)
 			{
-				res += " " + Name + ": ";
+				res += Name + ": ";
 			}
 
 			res += Value.ToString();

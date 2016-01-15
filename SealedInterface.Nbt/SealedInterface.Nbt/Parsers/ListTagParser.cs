@@ -17,10 +17,10 @@ namespace SealedInterface.Nbt.Parsers
 			ETagType generic = (ETagType)generic_b;
 			list.GenericType = generic;
 
-			if (generic == ETagType.End)
-			{
-				throw new Exception("TagList cannot consist End tags.");
-			}
+			//if (generic == ETagType.End)
+			//{
+			//	throw new Exception("TagList cannot consist End tags.");
+			//}
 
 			byte[] count_b = new byte[4];
 			stream.Read(count_b, 0, 4);

@@ -57,6 +57,60 @@ namespace SealedInterface.Nbt
 			}
 		}
 
+		public static ETagType GetETagTypeFromType(Type t)
+		{
+			if (t == typeof(TagEnd))
+			{
+				return ETagType.End;
+			}
+			else if (t == typeof(TagByte))
+			{
+				return ETagType.Byte;
+			}
+			else if (t == typeof(TagShort))
+			{
+				return ETagType.Short;
+			}
+			else if (t == typeof(TagInt))
+			{
+				return ETagType.Int;
+			}
+			else if (t == typeof(TagLong))
+			{
+				return ETagType.Long;
+			}
+			else if (t == typeof(TagFloat))
+			{
+				return ETagType.Float;
+			}
+			else if (t == typeof(TagDouble))
+			{
+				return ETagType.Double;
+			}
+			else if (t == typeof(TagByteArray))
+			{
+				return ETagType.Byte_Array;
+			}
+			else if (t == typeof(TagString))
+			{
+				return ETagType.String;
+			}
+			else if (t == typeof(TagList))
+			{
+				return ETagType.List;
+			}
+			else if (t == typeof(TagCompound))
+			{
+				return ETagType.Compound;
+			}
+			else if (t == typeof(TagIntArray))
+			{
+				return ETagType.Int_Array;
+			}
+
+			return ETagType.End;
+		}
+
 		public static string GetNotchName(this ETagType type)
 		{
 			return "TAG_" + type.ToString();
