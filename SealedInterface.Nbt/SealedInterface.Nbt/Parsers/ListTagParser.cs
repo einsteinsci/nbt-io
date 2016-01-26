@@ -36,7 +36,7 @@ namespace SealedInterface.Nbt.Parsers
 				list.Add(tag);
 			}
 
-			return list.Values;
+			return list.Children;
 		}
 
 		public override void WritePayload(Stream stream, INamedBinaryTag iTag)

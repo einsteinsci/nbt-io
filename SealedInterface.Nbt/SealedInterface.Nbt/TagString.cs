@@ -18,6 +18,8 @@ namespace SealedInterface.Nbt
 
 		public ETagType TagType => ETagType.String;
 
+		public List<INamedBinaryTag> Children => null;
+
 		public TagString(string name, string text = "")
 		{
 			Name = name;

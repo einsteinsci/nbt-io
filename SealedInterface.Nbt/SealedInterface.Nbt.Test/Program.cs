@@ -5,17 +5,32 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SealedInterface.Nbt.Json;
 using SealedInterface.Nbt.Parsers;
 
 namespace SealedInterface.Nbt.test
 {
 	public class Program
 	{
+		const string JSON = @"{""STUFF"":64}";
+
+		public class TestJson
+		{
+			public TagByte STUFF;
+		}
+
 		public static void Main(string[] args)
 		{
-			ReadRealFile();
+			ReadJson();
 
 			Console.ReadKey();
+		}
+
+		public static void ReadJson()
+		{
+			TagCompound tag = NbtJsonReader.Parse(JSON);
+			Console.WriteLine(tag.ToTreeString());
 		}
 
 		public static void ReadRealFile()

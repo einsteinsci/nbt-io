@@ -4,14 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SealedInterface.Nbt.Json;
 
 namespace SealedInterface.Nbt
 {
+	//[JsonConverter(typeof(IntegerTagConverter))]
+	[JsonObject(MemberSerialization.OptIn)]
 	public sealed class TagByte : INamedBinaryTag
 	{
 		public string Name
 		{ get; private set; }
 
+		[JsonProperty]
 		public sbyte Value
 		{ get; set; }
 
@@ -28,6 +33,8 @@ namespace SealedInterface.Nbt
 				Value = (sbyte)(value ? 1 : 0);
 			}
 		}
+
+		public List<INamedBinaryTag> Children => null;
 
 		public ETagType TagType => ETagType.Byte;
 

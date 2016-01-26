@@ -19,6 +19,8 @@ namespace SealedInterface.Nbt
 
 		public ETagType TagType => ETagType.Short;
 
+		public List<INamedBinaryTag> Children => null;
+
 		public TagShort(string name, short val = 0)
 		{
 			Name = name;

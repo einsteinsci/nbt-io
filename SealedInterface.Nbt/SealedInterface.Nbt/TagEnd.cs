@@ -15,6 +15,8 @@ namespace SealedInterface.Nbt
 
 		public object UnderlyingValue => null;
 
+		public List<INamedBinaryTag> Children => null;
+
 		public string ToTreeString(int depth = 0)
 		{
 			return "{END}";

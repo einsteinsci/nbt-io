@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SealedInterface.Nbt
 {
-	public sealed class TagCompound : DynamicObject, INamedBinaryTag
+	public sealed class TagCompound : DynamicObject, INamedBinaryTag, IEnumerable<INamedBinaryTag>
 	{
 		public string Name
 		{ get; private set; }
@@ -19,6 +20,8 @@ namespace SealedInterface.Nbt
 		public readonly Dictionary<string, INamedBinaryTag> Values = new Dictionary<string, INamedBinaryTag>();
 
 		public ETagType TagType => ETagType.Compound;
+
+		public List<INamedBinaryTag> Children => Values.Values.ToList();
 
 		public TagCompound(string name)
 		{
@@ -87,15 +90,15 @@ namespace SealedInterface.Nbt
 			}
 			else if (obj is IEnumerable<byte>)
 			{
-				AddByteArray(name).AddRange(obj as IEnumerable<byte>);
+				CreateByteArray(name).AddRange(obj as IEnumerable<byte>);
 			}
 			else if (obj is IEnumerable<sbyte>)
 			{
-				AddByteArray(name).AddRange(obj as IEnumerable<sbyte>);
+				CreateByteArray(name).AddRange(obj as IEnumerable<sbyte>);
 			}
 			else if (obj is IEnumerable<int>)
 			{
-				AddIntArray(name).AddRange(obj as IEnumerable<int>);
+				CreateIntArray(name).AddRange(obj as IEnumerable<int>);
 			}
 			else if (obj is IEnumerable<INamedBinaryTag>)
 			{
@@ -239,45 +242,51 @@ namespace SealedInterface.Nbt
 
 		#endregion get shortcuts
 
-		public TagCompound AddCompound(string name)
+		public TagCompound CreateCompound(string name)
 		{
 			TagCompound res = new TagCompound(name);
 			Set(name, res);
 			return res;
 		}
 
-		public TagList AddList(string name, ETagType type)
+		public TagList CreateList(string name, ETagType type)
 		{
 			TagList res = new TagList(name, type);
 			Set(name, res);
 			return res;
 		}
 
-		public TagByteArray AddByteArray(string name)
+		public TagByteArray CreateByteArray(string name)
 		{
 			TagByteArray ba = new TagByteArray(name);
 			Set(name, ba);
 			return ba;
 		}
 
-		public TagIntArray AddIntArray(string name)
+		public TagIntArray CreateIntArray(string name)
 		{
 			TagIntArray ia = new TagIntArray(name);
 			Set(name, ia);
 			return ia;
 		}
 
-		public void Rename(string oldName, string newName)
+		public bool Remove(string name)
+		{
+			return Values.Remove(name);
+		}
+
+		public bool Rename(string oldName, string newName)
 		{
 			INamedBinaryTag val = Get(oldName);
 			if (val == null)
 			{
-				return;
+				return false;
 			}
 
 			Values.Remove(oldName);
 			val = val.TagType.MakeTag(newName);
 			Values.Add(newName, val);
+			return true;
 		}
 
 		public INamedBinaryTag Get(string name)
@@ -350,5 +359,17 @@ namespace SealedInterface.Nbt
 			return true;
 		}
 		#endregion
+
+		#region IEnumerable<INamedBinaryTag>
+		public IEnumerator<INamedBinaryTag> GetEnumerator()
+		{
+			return Values.Values.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+		#endregion IEnumerable<INamedBinaryTag>
 	}
 }

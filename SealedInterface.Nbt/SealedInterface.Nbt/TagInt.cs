@@ -19,6 +19,8 @@ namespace SealedInterface.Nbt
 
 		public ETagType TagType => ETagType.Int;
 
+		public List<INamedBinaryTag> Children => null;
+
 		public TagInt(string name, int val = 0)
 		{
 			Name = name;

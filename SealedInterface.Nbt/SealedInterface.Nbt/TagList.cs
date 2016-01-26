@@ -15,11 +15,12 @@ namespace SealedInterface.Nbt
 
 		public ETagType TagType => ETagType.List;
 
-		public int Count => Values.Count;
+		public int Count => Children.Count;
 
 		public bool IsReadOnly => false;
 
-		public readonly List<INamedBinaryTag> Values = new List<INamedBinaryTag>();
+		public List<INamedBinaryTag> Children
+		{ get; private set; }
 
 		public object UnderlyingValue => this;
 
@@ -30,22 +31,24 @@ namespace SealedInterface.Nbt
 		{
 			get
 			{
-				return Values[i];
+				return Children[i];
 			}
 			set
 			{
-				Values[i] = value;
+				Children[i] = value;
 			}
 		}
 
 		public TagList(string name, ETagType genericType)
 		{
+			Children = new List<INamedBinaryTag>();
 			Name = name;
 			GenericType = genericType;
 		}
 
 		internal TagList(string name)
 		{
+			Children = new List<INamedBinaryTag>();
 			Name = name;
 		}
 
@@ -64,7 +67,7 @@ namespace SealedInterface.Nbt
 			}
 			res += Environment.NewLine;
 
-			foreach (INamedBinaryTag tag in Values)
+			foreach (INamedBinaryTag tag in Children)
 			{
 				res += tag.ToTreeString(depth + 1) + Environment.NewLine;
 			}
@@ -79,7 +82,7 @@ namespace SealedInterface.Nbt
 			{
 				res += Name + ": ";
 			}
-			res += Values.Count.ToString() + " Items";
+			res += Children.Count.ToString() + " Items";
 
 			return res;
 		}
@@ -193,57 +196,57 @@ namespace SealedInterface.Nbt
 		#region IList
 		public int IndexOf(INamedBinaryTag item)
 		{
-			return Values.IndexOf(item);
+			return Children.IndexOf(item);
 		}
 
 		public void Insert(int index, INamedBinaryTag item)
 		{
-			Values.Insert(index, item);
+			Children.Insert(index, item);
 		}
 
 		public void RemoveAt(int index)
 		{
-			Values.RemoveAt(index);
+			Children.RemoveAt(index);
 		}
 
 		public void Add(INamedBinaryTag item)
 		{
-			Values.Add(item);
+			Children.Add(item);
 		}
 
 		public void AddRange(IEnumerable<INamedBinaryTag> items)
 		{
-			Values.AddRange(items);
+			Children.AddRange(items);
 		}
 
 		public void AddRange(params INamedBinaryTag[] items)
 		{
-			Values.AddRange(items);
+			Children.AddRange(items);
 		}
 
 		public void Clear()
 		{
-			Values.Clear();
+			Children.Clear();
 		}
 
 		public bool Contains(INamedBinaryTag item)
 		{
-			return Values.Contains(item);
+			return Children.Contains(item);
 		}
 
 		public void CopyTo(INamedBinaryTag[] array, int arrayIndex)
 		{
-			Values.CopyTo(array, arrayIndex);
+			Children.CopyTo(array, arrayIndex);
 		}
 
 		public bool Remove(INamedBinaryTag item)
 		{
-			return Values.Remove(item);
+			return Children.Remove(item);
 		}
 
 		public IEnumerator<INamedBinaryTag> GetEnumerator()
 		{
-			return Values.GetEnumerator();
+			return Children.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -264,7 +267,7 @@ namespace SealedInterface.Nbt
 				return false;
 			}
 
-			result = Values[i].UnderlyingValue;
+			result = Children[i].UnderlyingValue;
 			return true;
 		}
 
@@ -285,68 +288,68 @@ namespace SealedInterface.Nbt
 					return false;
 				}
 
-				Values[i] = nbt;
+				Children[i] = nbt;
 				return true;
 			} 
 			else if (value is byte && GenericType == ETagType.Byte)
 			{
-				Values[i] = new TagByte(null, (byte)value);
+				Children[i] = new TagByte(null, (byte)value);
 				return true;
 			}
 			else if (value is sbyte && GenericType == ETagType.Byte)
 			{
-				Values[i] = new TagByte(null, (sbyte)value);
+				Children[i] = new TagByte(null, (sbyte)value);
 				return true;
 			}
 			else if (value is short && GenericType == ETagType.Short)
 			{
-				Values[i] = new TagShort(null, (short)value);
+				Children[i] = new TagShort(null, (short)value);
 				return true;
 			}
 			else if (value is int && GenericType == ETagType.Int)
 			{
-				Values[i] = new TagInt(null, (int)value);
+				Children[i] = new TagInt(null, (int)value);
 				return true;
 			}
 			else if (value is long && GenericType == ETagType.Long)
 			{
-				Values[i] = new TagLong(null, (long)value);
+				Children[i] = new TagLong(null, (long)value);
 				return true;
 			}
 			else if (value is float && GenericType == ETagType.Float)
 			{
-				Values[i] = new TagFloat(null, (float)value);
+				Children[i] = new TagFloat(null, (float)value);
 				return true;
 			}
 			else if (value is double && GenericType == ETagType.Double)
 			{
-				Values[i] = new TagDouble(null, (double)value);
+				Children[i] = new TagDouble(null, (double)value);
 				return true;
 			}
 			else if (value is string && GenericType == ETagType.String)
 			{
-				Values[i] = new TagString(null, value as string);
+				Children[i] = new TagString(null, value as string);
 				return true;
 			}
 			else if (value is IEnumerable<byte> && GenericType == ETagType.Byte_Array)
 			{
 				TagByteArray ba = new TagByteArray(null);
 				ba.AddRange(value as IEnumerable<byte>);
-				Values[i] = ba;
+				Children[i] = ba;
 				return true;
 			}
 			else if (value is IEnumerable<sbyte> && GenericType == ETagType.Byte_Array)
 			{
 				TagByteArray ba = new TagByteArray(null);
 				ba.AddRange(value as IEnumerable<sbyte>);
-				Values[i] = ba;
+				Children[i] = ba;
 				return true;
 			}
 			else if (value is IEnumerable<int> && GenericType == ETagType.Int_Array)
 			{
 				TagIntArray ia = new TagIntArray(null);
 				ia.AddRange(value as IEnumerable<int>);
-				Values[i] = ia;
+				Children[i] = ia;
 				return true;
 			}
 			else if (value is IEnumerable<INamedBinaryTag> && GenericType == ETagType.List)

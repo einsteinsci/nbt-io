@@ -23,6 +23,20 @@ namespace SealedInterface.Nbt
 
 		public bool IsReadOnly => ((IList<sbyte>)Values).IsReadOnly;
 
+		public List<INamedBinaryTag> Children
+		{
+			get
+			{
+				List<INamedBinaryTag> res = new List<INamedBinaryTag>();
+				foreach (sbyte s in Values)
+				{
+					res.Add(new TagByte(null, s));
+				}
+
+				return res;
+			}
+		}
+
 		public sbyte this[int index]
 		{
 			get

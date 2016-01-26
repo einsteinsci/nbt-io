@@ -18,6 +18,9 @@ namespace SealedInterface.Nbt
 		object UnderlyingValue
 		{ get; }
 
+		List<INamedBinaryTag> Children
+		{ get; }
+
 		string ToTreeString(int depth = 0);
 	}
 }
